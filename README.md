@@ -167,26 +167,18 @@ python TTselectionNewCRmvaIDdR.py -s StoAA1800x100 -y 16 --HT 900 -v JMR_up
 python TTselectionNewCRmvaIDdR.py -s StoAA1800x100 -y 16 --HT 900 -v JMR_down
 '''
 
-Clearly this is quite time consumign to do locally, and it's best to run on condor. However prior to running on condor it is a very good idea to first do a test run localy for a small MC signal sample to ensure you have everything properly in place!
+Clearly this is quite time consuming to do locally, and it's best to run on condor. However prior to running on condor it is a very good idea to first do a test run localy for a small MC signal sample to ensure you have everything properly in place!
 
-Take a look at the required condor steps in https://github.com/ammitra/TopHBoostedAllHad.  To apply the steps described there you will need 
+Take a look at the required condor steps in https://github.com/ammitra/TopHBoostedAllHad.  Follow the general instructions there, but the call you want to make for pair production is the following:
+'''
+python CondorHelper.py -r condor/run_selectiondRVR_TT18.sh -a condor/selection_args_MC_18.txt -i "TTClassdRVR18.py TTselectionNewCRmvaIDdRVR18.py helpers.py"
+'''
+You can take a look at the condor directory here to see what condor/run_selectiondRVR_TT18.sh does and what you must pass to it in condor/selection_args_MC_18.txt, for example.  This should give you a good idea as to what you need to do.
 
 ## 8. Gathering Cutflow Information
-To get information on yields after all important cuts, run `python cutflowSummary.py`. If you pass the optional `--selection` flag, then the script will calculate the yields after the selection criteria as well. One can also calculate the signal efficiencies for select signals by adding calling `printEfficiencies()` in the main function. **(TODO: implement this option via flag arg)**
+To get information on yields after all important cuts, run `python TTcutflowSummarydR.py`. If you pass the optional `--selection` flag, then the script will calculate the yields after the selection criteria as well. One can also calculate the signal efficiencies for select signals by adding calling `printEfficiencies()` in the main function. **(TODO: implement this option via flag arg)**
 
-The number of events are recorded after each of the following cuts:
-
-Snapshot phase:
-* `NPROC`: Initial number of processed events
-* `NFLAGS`: Cut on MET filters
-* `NJETS`: Cut on `nFatJets > 2`
-* `NJETID`: Cut on tight `Jet_jetId`
-* `NPT`: Cut on lead/sublead pT
-* `NKIN`: Cut on all other kinematic variables
-
-Selection phase:
-* `nTop_CR/SR`: Top cut in CR/SR
-* `higgsF/L/P_CR/SR`: Higgs cut in fail/loose/pass regions in CR/SR
+In addition to the cutflow variables for jets there are also cutflow variables for photons.  You can cator your cut choices based on what your final state entails.
 
 ## Kinematic distributions
 After having run snapshots, run `python dijet_nano/get_all.py` to populate the directory with the snapshot locations. Then, run `python THdistributions.py -y <year>` to generate kinematic distribution histograms in the `rootfiles/` directory. To plot, just run `python kinDistPlotter.py -y <year>`. **NOTE:** the plotting script only works with python3 since it uses fancy matplotlib things instead of ROOT. 
@@ -196,12 +188,10 @@ After having run snapshots, run `python dijet_nano/get_all.py` to populate the d
 
 ##  Final selections and studies
 Once you are sure the snapshots are finished and available and their locations have been accessed,
-the basic selection can be performed with `python THselection.py -s <setname> -y <year>`. This script
+the basic selection can be performed with `python TTselectiondR*.py -s <setname> -y <year>`. This script
 will take in the corresponding txt file in `dijet_nano/*.txt` and perform the basic signal region and "fail" region
 selections and makes 2D histograms for 2D Alphabet. However, any other selection or study 
-can follow a similar format to perform more complicated manipulation of the snapshots (ex. THstudies.py and THjetstudies.py).
-
-The processing of all sets in `dijet_nano/` can be performed in parallel with THplotter.py.
+can follow a similar format to perform more complicated manipulation of the snapshots.
 
 # Data and background
 2016
