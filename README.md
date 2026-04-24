@@ -49,14 +49,14 @@ voms-proxy-init --rfc --voms cms -valid 192:00
 ## 0. Generic TTClassdR
 The preselection is specific to the pair production and final state and thus differs from https://github.com/ammitra/TopHBoostedAllHad in some details.  Most of the edits to accomodate this difference are denoted as 'DP edit' in the code.
 
-The TTClassdR modules hold all of the basic, generic logic to perform the selection.
+The TTClassdR* modules hold all of the basic, generic logic to perform the selection.
 Any additions, modifications, splittings, or saving of the selection should be added here.
 Subsequent steps should always interface with this so that if something is changed, it's propagated
 to the full pipeline.
 
 **NOTE:** For snapshot generation only TTClassdR is necessary.  For SR/CR and VR-SR/CR selection it is necessary to use the corresponding version of TTClassdR (these include TTClassdR18, TTClassdRVR, TTClassdR18VR, and TTClassdRData): for MC selection in SR/CR use TTClassdR for 2016-2017 and for 2018 use TTClassdR18, for VR use the VR versions, and for data use the Data version.
 
-All the TTClassdR take advantage of functions provided by TTmodules.cc.
+All the TTClassdR* take advantage of functions provided by TTmodules.cc.
 
 ## 1. Grab latest raw NanoAOD file locations
 --------------
@@ -94,7 +94,7 @@ Snapshot generation is specific to the pair production and final state and thus 
 
 The command to perform one snapshot using `TTsnapshot.py` is 
 ```
-python TTsnapshot.py -s <setname> -y <16,17,18> -j <ijob> -n <njobs>
+python TTsnapshot.py -s <setname> -y <16,16APV, 17,18> -j <ijob> -n <njobs>
 ```
 where `<ijob>` and `<njobs>` determine the job number and the number of jobs to split into and default
 to 1 and 1, respectively.
@@ -109,7 +109,7 @@ Please follow the instructions from https://github.com/ammitra/TopHBoostedAllHad
 * collection
 * checking job success
   
-Take a look at /uscms/home/dpilipov/nobackup/TIMBER/CMSSW_11_1_4/src/TopHBoostedAllHad/condor for an example of run_snapshot_TT.sh and snapshot_args*.txt .
+Take a look at condor/run_snapshot_TT.sh and condor/snapshot_args*.txt in this repository.
 
 ## 5. Making the trigger efficiencies
 ----------------------------
@@ -173,14 +173,16 @@ Take a look at the required condor steps in https://github.com/ammitra/TopHBoost
 '''
 python CondorHelper.py -r condor/run_selectiondRVR_TT18.sh -a condor/selection_args_MC_18.txt -i "TTClassdRVR18.py TTselectionNewCRmvaIDdRVR18.py helpers.py"
 '''
-You can take a look at the condor directory here to see what condor/run_selectiondRVR_TT18.sh does and what you must pass to it in condor/selection_args_MC_18.txt, for example.  This should give you a good idea as to what you need to do.
+You can take a look at the condor directory in this repo to see what condor/run_selectiondRVR_TT18.sh does and what you must pass to it in condor/selection_args_MC_18.txt, for example.  This should give you a good idea as to what you need to do.
 
 ## 8. Gathering Cutflow Information
-To get information on yields after all important cuts, run `python TTcutflowSummarydR.py`. If you pass the optional `--selection` flag, then the script will calculate the yields after the selection criteria as well. One can also calculate the signal efficiencies for select signals by adding calling `printEfficiencies()` in the main function. **(TODO: implement this option via flag arg)**
+To get information on yields after all important cuts, run `python TTcutflowSummarydR.py`. 
 
 In addition to the cutflow variables for jets there are also cutflow variables for photons.  You can cator your cut choices based on what your final state entails.
 
 ## Kinematic distributions
+Same as in https://github.com/ammitra/TopHBoostedAllHad:
+
 After having run snapshots, run `python dijet_nano/get_all.py` to populate the directory with the snapshot locations. Then, run `python THdistributions.py -y <year>` to generate kinematic distribution histograms in the `rootfiles/` directory. To plot, just run `python kinDistPlotter.py -y <year>`. **NOTE:** the plotting script only works with python3 since it uses fancy matplotlib things instead of ROOT. 
 
 
