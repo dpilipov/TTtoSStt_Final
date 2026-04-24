@@ -44,24 +44,35 @@ voms-proxy-init --rfc --voms cms -valid 192:00
 ```
 (Note, actually my work area is in /uscms/home/dpilipov/nobackup/TIMBER/CMSSW_11_1_4/src/TopHBoostedAllHad, hence, technically I would cd to TopHBoostedAllHad instead of TTtoSStt_Final above.)
 
-## 0. The generic TTClassdR, TTClassdR18, TTClassdRVR, TTClassdR18VR, and TTClassdRData
-The TTClassdR* modules hold inside of it all of the basic, generic logic to perform the selection.
+**NOTE:** All the steps follow the same process as what is shown for https://github.com/ammitra/TopHBoostedAllHad in README.  Please use this as a reference.  The variations across the steps are explained below.
+
+## 0. Generic TTClassdR, TTClassdR18, TTClassdRVR, TTClassdR18VR, and TTClassdRData
+The preselection is specific to the pair production and final state and thus differs from https://github.com/ammitra/TopHBoostedAllHad in some details.  Most of the edits to accomodate this difference are denoted as 'DP edit' in the code.
+
+The TTClassdR modules hold all of the basic, generic logic to perform the selection.
 Any additions, modifications, splittings, or saving of the selection should be added here.
 Subsequent steps should always interface with this so that if something is changed, it's propagated
 to the full pipeline.
 
 For MC processing in SR/CR use TTClassdR for 2016-2017 and for 2018 use TTClassdR18.  For VR use the VR versions.  For data use the Data version.
 
+All the TTClassdR take advantage of functions provided by TTmodules.cc.
+
 ## 1. Grab latest raw NanoAOD file locations
 --------------
+Same as in https://github.com/ammitra/TopHBoostedAllHad:
+
 The list of file locations in `raw_nano/` can be easily populated with
 ```
 python raw_nano/get_all_lpc.py
 ```
 If one wishes to add to the sets considered, simply modify the dictionary
 in `raw_nano/get_all_lpc.py` with the name of the set and the DAS path.
+
 ## 2. Create pileup distributions for pileup weights
 ------------------
+Same as in https://github.com/ammitra/TopHBoostedAllHad:
+
 This is handled by THpileup.py.
 ```
 python THpileup.py -s <setname> -y <year>
@@ -75,7 +86,8 @@ python CondorHelper.py -r condor/run_pileup.sh -a condor/pileup_args.txt -i "THp
 ```
 To collect the outputs to one local file called `THpileup.root`, use `scripts/get_pileup_file.sh`.
 
-**NOTE:** You'll need to follow the instructions in the next section setup condor correctly.
+**NOTE:** Please follow instructions in https://github.com/ammitra/TopHBoostedAllHad to setup condor correctly.
+
 ## 3. Perform snapshot on `raw_nano/` files
 -------------
 The command to perform one snapshot using `THsnapshot.py` is 
@@ -304,86 +316,60 @@ can follow a similar format to perform more complicated manipulation of the snap
 
 The processing of all sets in `dijet_nano/` can be performed in parallel with THplotter.py.
 
-# Data and simulation
+# Data and background
 2016
 | Setname | DAS location |
 |---------|--------------|
 | DataB1 | /JetHT/Run2016B-ver1_HIPM_UL2016_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataB2 | /JetHT/Run2016B-ver2_HIPM_UL2016_MiniAODv1_NanoAODv2-v1/NANOAOD |
-| QCDHT2000 | /QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
 | QCDHT700 | /QCD_HT700to1000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
+| QCDHT1000 | /QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
+| QCDHT1500 | /QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
+| QCDHT2000 | /QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
 | DataH | /JetHT/Run2016H-UL2016_MiniAODv1_NanoAODv2-v1/NANOAOD |
-| TprimeB 800 GeV | /TprimeBToTH_M-800_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 900 GeV | /TprimeBToTH_M-900_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1000 GeV | /TprimeBToTH_M-1000_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1100 GeV | /TprimeBToTH_M-1100_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1200 GeV | /TprimeBToTH_M-1200_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1300 GeV | /TprimeBToTH_M-1300_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1400 GeV | /TprimeBToTH_M-1400_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1500 GeV | /TprimeBToTH_M-1500_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1600 GeV | /TprimeBToTH_M-1600_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1700 GeV | /TprimeBToTH_M-1700_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| TprimeB 1800 GeV | /TprimeBToTH_M-1800_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
 | DataE | /JetHT/Run2016E-UL2016_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataD | /JetHT/Run2016D-UL2016_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataG | /JetHT/Run2016G-UL2016_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataF | /JetHT/Run2016F-UL2016_MiniAODv1_NanoAODv2-v2/NANOAOD |
 | DataC | /JetHT/Run2016C-UL2016_MiniAODv1_NanoAODv2-v1/NANOAOD |
-| QCDHT1500 | /QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
 | ttbar | /TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
 | ttbar-semilep | /TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
-| QCDHT1000 | /QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL16NanoAODv2-106X_mcRun2_asymptotic_v15-v1/NANOAODSIM |
 
 2017
 | Setname | DAS location |
 |---------|--------------|
-| QCDHT1000 | /QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| QCDHT2000 | /QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
 | QCDHT700 | /QCD_HT700to1000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 800 GeV | /TprimeBToTH_M-800_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 900 GeV | /TprimeBToTH_M-900_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1000 GeV | /TprimeBToTH_M-1000_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1100 GeV | /TprimeBToTH_M-1100_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1200 GeV | /TprimeBToTH_M-1200_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1300 GeV | /TprimeBToTH_M-1300_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1400 GeV | /TprimeBToTH_M-1400_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1500 GeV | /TprimeBToTH_M-1500_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1600 GeV | /TprimeBToTH_M-1600_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1700 GeV | /TprimeBToTH_M-1700_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
-| TprimeB 1800 GeV | /TprimeBToTH_M-1800_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
+| QCDHT1000 | /QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
+| QCDHT1500 | /QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
+| QCDHT2000 | /QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
 | DataE | /JetHT/Run2017E-UL2017_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataD | /JetHT/Run2017D-UL2017_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataF | /JetHT/Run2017F-UL2017_MiniAODv1_NanoAODv2-v2/NANOAOD |
 | DataC | /JetHT/Run2017C-UL2017_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataB | /JetHT/Run2017B-UL2017_MiniAODv1_NanoAODv2-v1/NANOAOD |
-| QCDHT1500 | /QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
 | ttbar | /TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
 | ttbar-semilep | /TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL17NanoAODv2-106X_mc2017_realistic_v8-v1/NANOAODSIM |
 
 2018
 | Setname | DAS location |
 |---------|--------------|
-| QCDHT1000 | /QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| QCDHT2000 | /QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
 | QCDHT700 | /QCD_HT700to1000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 800 GeV | /TprimeBToTH_M-800_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 900 GeV | /TprimeBToTH_M-900_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1000 GeV | /TprimeBToTH_M-1000_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1100 GeV | /TprimeBToTH_M-1100_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1200 GeV | /TprimeBToTH_M-1200_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1300 GeV | /TprimeBToTH_M-1300_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1400 GeV | /TprimeBToTH_M-1400_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1500 GeV | /TprimeBToTH_M-1500_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1600 GeV | /TprimeBToTH_M-1600_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1700 GeV | /TprimeBToTH_M-1700_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
-| TprimeB 1800 GeV | /TprimeBToTH_M-1800_LH_TuneCP5_PSweights_13TeV-madgraph_pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
+| QCDHT1000 | /QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
+| QCDHT1500 | /QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
+| QCDHT2000 | /QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
 | DataD | /JetHT/Run2018D-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataA | /JetHT/Run2018A-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataC | /JetHT/Run2018C-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD |
 | DataB | /JetHT/Run2018B-UL2018_MiniAODv1_NanoAODv2-v1/NANOAOD |
-| QCDHT1500 | /QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
 | ttbar | /TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
 | ttbar-semilep | /TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL18NanoAODv2-106X_upgrade2018_realistic_v15_L1v1-v1/NANOAODSIM |
+
+# Signal samples
+We originally generated only local samples to play with and better understand how the model works.  Ultimately, we requested centrally produced samples.   These are readily available (as NanoAODs) for you to take a look.  For example, for M_T = 1000GeV and M_S = 100GeV you can look at the available samples on DAS:
+'''
+dataset=/TprimeTprimeToSSTTTo2ASTT_MTprime-1000_MS-100_TuneCP5_13TeV-madgraph-pythia8/*/*
+'''
+On DAS you will find samples for M_T = 800 to 1500GeV and M_S=50 to 350GeV.  We expanded our M_T mass range during ARC review to include additional M_T points, up to 1800GeV.  These are locally generated, and you can find them in /store/user/dpilipov/TTtoSStt/* organized by periods.
 
 # Selections
 
@@ -393,32 +379,16 @@ The processing of all sets in `dijet_nano/` can be performed in parallel with TH
 | p_T           | Both jets, > 350 GeV      |
 | abs(\eta)     | Both jets, < 2.4          |
 | \Delta \phi   | > M_PI/2                  |
-| Top tag       | DeepAK8 MD > 0.632 + 105 < mSD < 210 (5% mistag) |
-| Higgs tag     | **DeepAK8 MD > 0.9**|
+| 2 Tops tag    | TvsQCD WP0.5%             |
+| 2Photon tag   | mvaID WP80                |
 
-## QCD-enriched region (fail)
+## Control region
 | Variable      | Selection                 |
 |---------------|---------------------------|
 | p_T           | Both jets, > 350 GeV      |
 | abs(\eta)     | Both jets, < 2.4          |
 | \Delta \phi   | > M_PI/2                  |
-| Top tag       | DeepAK8 MD < 0.632 + 105 < mSD < 210 (5% mistag) |
-| Higgs tag     | **DeepAK8 MD < 0.9** |
+| 2 Tops tag    | TvsQCD WP0.5%             |
+| 2Photon tag   | FAIL mvaID WP80           |
 
-# Open questions
-- Need the Higgs tagging SFs from B2G-20-004
-- Are the tagging WPs optimal?
-- Do we use a tight and loose Higgs tag as in B2G-20-004?
-If so, what regions are available for the "fail" of 2D Alphabet?
-    - **Answer: No. Does not seem necessary to the analysis.**
-- Do we have any other kinematic cuts to make (delta eta or delta rapidity)?
-    - **Answer: In addition to possibly affecting the transfer function (which is currently very
-    smooth), the available models under which this analysis could be reinterpreted shrinks so we
-    will not be considering cuts on these variables.**
-- Can we switch to the ParticleNet taggers?
-    - **Answer: Yes**
-- Can we try using pT cut of 400 GeV or higher to ensure the top merges?
-    - **Answer: Yes**
-- Do we want to make the top the alphabet side?
-    - **Answer: No. There are lots of ttbar events so establishing how much top doesn't tell you how much tH there are. On the other hand, the SM background for H+X is tiny.  So, finding H inside the preselection that includes top and QCD on the other side makes it much more likely that this is what we are looking for. You additionally avoid your signal jet mass being on top of the top jet mass ridge and instead it lives in the flat area of 100-140 GeV.**
 
