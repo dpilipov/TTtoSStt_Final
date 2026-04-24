@@ -1,0 +1,49 @@
+{
+    "lumi16":35917.213466,
+    "lumi17":41521.427777,
+    "lumi18":59692.687741,
+    "TRIGS":{
+	"DataF_16": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+	"DataG_16": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+	"DataH_16": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+        "DataB_16APV": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+        "DataC_16APV": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+        "DataD_16APV": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+        "DataE_16APV": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+        "DataF_16APV": ["HLT_PFHT800","HLT_PFHT900","HLT_PFHT650_WideJetMJJ900DEtaJJ1p5","HLT_AK8PFJet450"],
+        "DataB_17": ["HLT_PFHT1050","HLT_AK8PFJet500"],
+	"Data_17": ["HLT_PFHT1050","HLT_AK8PFJet500","HLT_AK8PFHT750_TrimMass50","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet400_TrimMass30"],
+        "DataC_17": ["HLT_PFHT1050","HLT_AK8PFJet500","HLT_AK8PFHT750_TrimMass50","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet400_TrimMass30"],
+        "DataD_17": ["HLT_PFHT1050","HLT_AK8PFJet500","HLT_AK8PFHT750_TrimMass50","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet400_TrimMass30"],
+        "DataE_17": ["HLT_PFHT1050","HLT_AK8PFJet500","HLT_AK8PFHT750_TrimMass50","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet400_TrimMass30"],
+        "DataF_17": ["HLT_PFHT1050","HLT_AK8PFJet500","HLT_AK8PFHT750_TrimMass50","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet400_TrimMass30"],
+        "DataA_18": ["HLT_PFHT1050","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet500","HLT_AK8PFJet400_TrimMass30"],
+        "DataB_18": ["HLT_PFHT1050","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet500","HLT_AK8PFJet400_TrimMass30"],
+        "DataC_18": ["HLT_PFHT1050","HLT_AK8PFHT800_TrimMass50","HLT_AK8PFJet500","HLT_AK8PFJet400_TrimMass30"]
+    },
+    "XSECS":{
+        "ttbar-allhad":377.96,
+        "ttbar-semilep":365.34,
+        "QCDHT700":6802,
+        "QCDHT1000":1206,
+        "QCDHT1500":120.4,
+        "QCDHT2000":25.25,
+	"WJetsHT400":315.2,
+	"WJetsHT600":68.58,
+	"WJetsHT800":34.69,
+	"ZJetsHT400":145.3,
+	"ZJetsHT600":34.29,
+	"ZJetsHT800":18.57,
+	"StoAA":54.08
+    },
+    "CUTS":{
+        "pt":350,
+        "eta":2.4,
+        "mh":[100,140],
+        "mt":[105,210],
+        "deepTagMD_HbbvsQCD": 0.05,
+        "particleNetMD_HbbvsQCD": 0.05,
+        "deepTag_TvsQCD": 0.05,
+        "particleNet_TvsQCD": 0.05
+    }
+}
