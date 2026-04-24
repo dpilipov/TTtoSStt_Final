@@ -1,26 +1,57 @@
-# about this branch
-We are now considering $T^{\prime}\to t\phi$ and investigating the post-APV changes to TIMBER, specifically, running selection on all new files.
+# TTtoSStt_Final
+We are considering pair produced vector like tops where each decays to a top quark and a new scalar, with consequent diphoton decay of one of the two scalars while second is treated inclusively, $TT\to tt\phi\phi, \phi\to\gamma\gamma$.  This branch covers the necessary analysis steps, from generating snapshots based on initial selection to obtaining the final selection / regions.
 
-We are using the CR defined by:
+# Overall Analysis Strategy
+We use JHU's TIMBER, which takes advantage of RDataFrame to process data fast, and to implement other CMS-related functionality, in order to  obtain the final selection shapes across the various regions of a 2-d mass space.  The consequent steps of fitting a model, a variation on the ABCD method, are covered in a separate branch, and take advantage of 2DAlphabet, again edited for the specific needs of this analysis.
 
-* CR_v2 - CR_v1 + additional Higgs veto, i.e. `HbbvsQCD_MD < 0.2` 
+The code here originates from Amitav Mitra's code for single production $T\to t\phi$ code, with specific edits for pair production and final state.  The edits are covered both in the README documentation here. as well as in the actual code.
 
-And running selection only *all* new snapshots (including 2016APV, W/Z+jets, new signal samples, etc)
+# Set up TIMBER/analysis area
+To set up the environment, including TIMBER and the analysis area we follow the same steps as for Amitav's set up for TopHBoostedAllHad which was edited and supplemented for pair production (take a look at https://github.com/ammitra/TIMBER and https://github.com/ammitra/TopHBoostedAllHad).  However, to make sure you have the required TIMBER edits and the required code for pair production you must clone TIMBER and TTtoSStt_Final from my area:
 
-# Analysis Strategy
-Dijet search for boosted X -> top+Higgs. The benchmark, X, is a VLQ T' produced
-in association with a bottom quark. The interaction with an associated top quark
-is currently ignored since the simulation samples are inconsistent with the UL
-versions available for all other MC. The associated quark will have 
-much lower transverse momentum than the T' decay products and so the affect on
-the analysis is expected to be small (ie. quark will be along beamline).
+```
+cmssw-el7 -p --bind `readlink $HOME` --bind `readlink -f ${HOME}/nobackup/` --bind /uscms_data --bind /cvmfs
+export SCRAM_ARCH=slc7_amd64_gcc820 
+mkdir yourAnalysisDirName
+cd yourAnalysisDirName/
+cmsrel CMSSW_11_1_4
+cd CMSSW_11_1_4/src
+cmsenv
 
-# Processing Pipeline
-## 0. The generic THClass
-The THClass holds inside of it all of the basic, generic logic to perform the selection.
+git clone https://github.com/dpilipov/TIMBER.git
+python -m virtualenv timber-env
+source timber-env/bin/activate
+cd TIMBER
+source setup.sh
+cd ..
+git clone https://github.com/dpilipov/TTtoSStt_Final.git
+cd TTtoSStt_Final
+```
+IMPORTANT NOTE!  HEM_drop.cc (see TIMBER/Framework/include for HEM_drop.h and TIMBER/Framework/src for HEM_drop.cc) is NOT used for the pair production analysis!  Instead, HEM_dropData and HEM_dropMC code is now included in TTmodules.cc, and is used for correcting for HEM in 2018.  During TIMBER setup you will get an error regarding HEM_drop.cc which you can ignore.
+
+# Work in a container
+Whenever you work in this area you need to use the container and set up the environment.  For example, 
+```
+cmssw-el7 -p --bind `readlink $HOME` --bind `readlink -f ${HOME}/nobackup/` --bind /uscms_data --bind /cvmfs
+cd /uscms/home/dpilipov/nobackup/TIMBER/CMSSW_11_1_4/src
+cmsenv
+source timber-env/bin/activate
+cd TIMBER
+source setup.sh
+cd ..
+cd TTtoSStt_Final
+voms-proxy-init --rfc --voms cms -valid 192:00                          
+```
+(Note, actually my work area is in /uscms/home/dpilipov/nobackup/TIMBER/CMSSW_11_1_4/src/TopHBoostedAllHad, hence, technically I would cd to TopHBoostedAllHad instead of TTtoSStt_Final above.)
+
+## 0. The generic TTClassdR, TTClassdR18, TTClassdRVR, TTClassdR18VR, and TTClassdRData
+The TTClassdR* modules hold inside of it all of the basic, generic logic to perform the selection.
 Any additions, modifications, splittings, or saving of the selection should be added here.
 Subsequent steps should always interface with this so that if something is changed, it's propagated
 to the full pipeline.
+
+For MC processing in SR/CR use TTClassdR for 2016-2017 and for 2018 use TTClassdR18.  For VR use the VR versions.  For data use the Data version.
+
 ## 1. Grab latest raw NanoAOD file locations
 --------------
 The list of file locations in `raw_nano/` can be easily populated with
@@ -391,4 +422,3 @@ If so, what regions are available for the "fail" of 2D Alphabet?
 - Do we want to make the top the alphabet side?
     - **Answer: No. There are lots of ttbar events so establishing how much top doesn't tell you how much tH there are. On the other hand, the SM background for H+X is tiny.  So, finding H inside the preselection that includes top and QCD on the other side makes it much more likely that this is what we are looking for. You additionally avoid your signal jet mass being on top of the top jet mass ridge and instead it lives in the flat area of 100-140 GeV.**
 
-# TTtoSStt_Final
